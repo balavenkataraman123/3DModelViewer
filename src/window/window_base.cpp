@@ -53,7 +53,8 @@ WindowBase::WindowBase(uint32_t width, uint32_t height)
 
 WindowBase::~WindowBase()
 {
-
+    glfwDestroyWindow(m_window);
+    glfwTerminate();
 }
 
 void APIENTRY gl_debug_output(GLenum source,
