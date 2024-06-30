@@ -20,13 +20,13 @@ VertexBufferLayout::VertexBufferLayout(std::initializer_list<attribute> attribut
     }
 }
 
-void VertexBufferLayout::add_attribute(const VertexBufferLayout::attribute &attribute)
+void VertexBufferLayout::add_attribute(const attribute &attribute)
 {
     increase_stride(attribute);
     m_attributes.push_back(attribute);
 }
 
-void VertexBufferLayout::add_attribute(VertexBufferLayout::attribute &&attribute)
+void VertexBufferLayout::add_attribute(attribute &&attribute)
 {
     increase_stride(attribute);
     m_attributes.push_back(std::move(attribute));
@@ -37,12 +37,12 @@ uint32_t VertexBufferLayout::stride() const
     return m_stride;
 }
 
-const std::vector<VertexBufferLayout::attribute> &VertexBufferLayout::attributes() const
+const std::vector<attribute> &VertexBufferLayout::attributes() const
 {
     return m_attributes;
 }
 
-void VertexBufferLayout::increase_stride(const VertexBufferLayout::attribute &attribute)
+void VertexBufferLayout::increase_stride(const attribute &attribute)
 {
     m_stride += attribute.size * utils::gl_sizeof(attribute.type);
 }

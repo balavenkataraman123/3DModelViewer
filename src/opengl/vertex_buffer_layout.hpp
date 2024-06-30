@@ -12,17 +12,10 @@
 #include "../utils/utils.hpp"
 
 
+struct attribute;
+
 class VertexBufferLayout
 {
-public:
-    struct attribute
-    {
-        uint32_t index;
-        int size;
-        uint32_t type;
-        uint8_t normalize;
-    };
-
 public:
     VertexBufferLayout();
     VertexBufferLayout(std::initializer_list<attribute> attributes);
@@ -41,5 +34,13 @@ private:
     uint32_t m_stride;
 };
 
+
+struct attribute
+{
+    uint32_t index;
+    int size;
+    uint32_t type = GL_FLOAT;
+    uint8_t normalize = GL_FALSE;
+};
 
 #endif //INC_3DMODELVIEWER_VERTEX_BUFFER_LAYOUT_HPP
