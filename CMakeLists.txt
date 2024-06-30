@@ -20,7 +20,30 @@ add_executable(3DModelViewer
         ${GLAD_HEADERS}
         ${IMGUI_SRC}
         ${IMGUI_HEADERS}
-        src/main.cpp)
+        src/main.cpp
+        src/opengl/vertex_buffer.hpp
+        src/opengl/vertex_buffer_static.cpp
+        src/opengl/vertex_buffer_static.hpp
+        src/opengl/index_buffer.hpp
+        src/opengl/index_buffer_static.cpp
+        src/opengl/index_buffer_static.hpp
+        src/opengl/vertex_buffer_layout.cpp
+        src/opengl/vertex_buffer_layout.hpp
+        src/opengl/vertex_array.cpp
+        src/opengl/vertex_array.hpp
+        src/utils/utils.cpp
+        src/utils/utils.hpp
+        src/window/window_base.cpp
+        src/window/window_base.hpp
+        src/window/window.cpp
+        src/window/window.hpp
+        src/opengl/includes.hpp
+        src/opengl/shader.cpp
+        src/opengl/shader.hpp
+        src/opengl/texture2D.cpp
+        src/opengl/texture2D.hpp
+        src/opengl/framebuffer.cpp
+        src/opengl/framebuffer.hpp)
 
 find_package(OpenGL REQUIRED)
 
