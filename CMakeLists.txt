@@ -43,7 +43,9 @@ add_executable(3DModelViewer
         src/opengl/texture2D.cpp
         src/opengl/texture2D.hpp
         src/opengl/framebuffer.cpp
-        src/opengl/framebuffer.hpp)
+        src/opengl/framebuffer.hpp
+        src/imgui/im_gui_context.cpp
+        src/imgui/im_gui_context.hpp)
 
 find_package(OpenGL REQUIRED)
 

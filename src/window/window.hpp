@@ -27,6 +27,7 @@ private:
     VertexBufferStatic vbo;
     IndexBufferStatic ibo;
     Shader shader;
+    Texture2D texture;
 };
 
 

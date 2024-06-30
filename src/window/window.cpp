@@ -7,13 +7,14 @@
 Window::Window(uint32_t width, uint32_t height)
     : WindowBase(width, height)
     , shader("../shaders/test.vert", "../shaders/test.frag")
+    , texture("../assets/textures/lion.png")
 {
     float vertices[]
     {
-        -0.5, 0.5, // top left
-        0.5, 0.5, // top right
-        0.5, -0.5, // bottom left
-        -0.5, -0.5
+        -0.5, 0.5, 0, 1, // top left
+        0.5, 0.5, 1, 1, // top right
+        0.5, -0.5, 1, 0, // bottom right
+        -0.5, -0.5, 0, 0 // bottom left
     };
 
     unsigned int indices[] {0, 1, 2, 0, 2, 3};
@@ -23,7 +24,8 @@ Window::Window(uint32_t width, uint32_t height)
 
     VertexBufferLayout layout
     {
-        {0, 2, GL_FLOAT, GL_FALSE}
+        {0, 2},
+        {1, 2}
     };
 
     vao.attach_vertex_buffer(vbo, layout);
@@ -55,6 +57,7 @@ void Window::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    texture.bind();
     shader.bind();
     vao.bind();
 

@@ -42,6 +42,8 @@ WindowBase::WindowBase(uint32_t width, uint32_t height)
         throw std::runtime_error("WindowBase::WindowBase: Failed to load glad\n");
     }
 
+    ImGui_Context::init(m_window);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -53,6 +55,7 @@ WindowBase::WindowBase(uint32_t width, uint32_t height)
 
 WindowBase::~WindowBase()
 {
+    ImGui_Context::terminate();
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
