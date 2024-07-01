@@ -11,9 +11,6 @@
 #include <glad/glad.h>
 
 
-// test const char* copying
-// test texture
-
 struct Texture2DSpec;
 
 class Texture2D
