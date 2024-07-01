@@ -140,8 +140,6 @@ void Framebuffer::destroy()
 
         m_renderer_id = 0;
         m_texture_id = 0;
-        m_width = 0;
-        m_height = 0;
     }
 }
 
@@ -171,7 +169,7 @@ void Framebuffer::make_normal_fbo()
 
 void Framebuffer::make_multisampled_fbo()
 {
-    constexpr uint32_t SAMPLES = 16;
+    constexpr uint32_t SAMPLES = 4;
 
     glCreateTextures(GL_TEXTURE_2D_MULTISAMPLE, 1, &m_texture_id);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_texture_id);
