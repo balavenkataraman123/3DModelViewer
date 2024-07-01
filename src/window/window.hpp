@@ -6,7 +6,8 @@
 #define INC_3DMODELVIEWER_WINDOW_HPP
 
 #include "window_base.hpp"
-#include "../opengl/includes.hpp" // todo: remove
+#include "viewport.hpp"
+#include "../imgui/im_gui_context.hpp"
 
 
 class Window : public WindowBase
@@ -23,11 +24,7 @@ private:
     static void key_callback(GLFWwindow* p_window, int key, int scancode, int action, int mods);
 
 private:
-    VertexArray vao;
-    VertexBufferStatic vbo;
-    IndexBufferStatic ibo;
-    Shader shader;
-    Texture2D texture;
+    Viewport m_viewport;
 };
 
 

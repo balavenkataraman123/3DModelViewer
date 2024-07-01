@@ -6,30 +6,9 @@
 
 Window::Window(uint32_t width, uint32_t height)
     : WindowBase(width, height)
-    , shader("../shaders/test.vert", "../shaders/test.frag")
-    , texture("../assets/textures/lion.png")
 {
-    float vertices[]
-    {
-        -0.5, 0.5, 0, 1, // top left
-        0.5, 0.5, 1, 1, // top right
-        0.5, -0.5, 1, 0, // bottom right
-        -0.5, -0.5, 0, 0 // bottom left
-    };
-
-    unsigned int indices[] {0, 1, 2, 0, 2, 3};
-
-    vbo = {vertices , sizeof(vertices)};
-    ibo = {indices, 6};
-
-    VertexBufferLayout layout
-    {
-        {0, 2},
-        {1, 2}
-    };
-
-    vao.attach_vertex_buffer(vbo, layout);
-    vao.attach_index_buffer(ibo);
+    glfwSetWindowUserPointer(m_window, this);
+    glfwSetKeyCallback(m_window, key_callback);
 }
 
 void Window::run()
@@ -51,18 +30,18 @@ void Window::run()
 void Window::update(float dt)
 {
     fps_counter(dt);
+    ImGui_Context::begin();
+    ImGui::ShowDemoWindow();
+    m_viewport.update(dt);
 }
 
 void Window::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    texture.bind();
-    shader.bind();
-    vao.bind();
+    m_viewport.render();
 
-    glDrawElements(GL_TRIANGLES, ibo.count(), GL_UNSIGNED_INT, nullptr);
-
+    ImGui_Context::end();
     glfwSwapBuffers(m_window);
 }
 
@@ -76,7 +55,7 @@ void Window::fps_counter(float dt)
 
     if (fps_update_time > 1)
     {
-        std::cout << "Fps: " << frame_count << '\n';
+        std::cout << "Fps: " << frame_count << std::endl;
         frame_count = 0;
         fps_update_time -= 1;
     }

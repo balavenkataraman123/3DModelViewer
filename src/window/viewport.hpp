@@ -14,28 +14,13 @@
 class Viewport
 {
 public:
-    Viewport(uint32_t width, uint32_t height);
+    Viewport();
 
     void update(float dt);
     void render();
 
 private:
-    void pre_render();
-    void post_render();
-    void resize();
-
-private:
-    Framebuffer m_fbo;
-    Framebuffer m_intermediate_fbo;
-
-    uint32_t m_width;
-    uint32_t m_height;
-
-    VertexArray vao;
-    VertexBufferStatic vbo;
-    IndexBufferStatic ibo;
-    Shader shader;
-    Texture2D texture;
+    void menu_bar();
 };
 
 
