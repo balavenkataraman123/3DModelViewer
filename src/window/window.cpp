@@ -6,16 +6,18 @@
 
 Window::Window(uint32_t width, uint32_t height)
     : WindowBase(width, height)
+    , m_viewport(width, height)
 {
-    glfwSetWindowUserPointer(m_window, this);
-    glfwSetKeyCallback(m_window, key_callback);
+    glfwSetWindowUserPointer(m_glfw_window, this);
+    glfwSetKeyCallback(m_glfw_window, key_callback);
+    glfwSetWindowSizeCallback(m_glfw_window, resize_callback);
 }
 
 void Window::run()
 {
     float last_time = 0;
 
-    while (!glfwWindowShouldClose(m_window))
+    while (!glfwWindowShouldClose(m_glfw_window))
     {
         float current_time = glfwGetTime();
         float dt = current_time - last_time;
@@ -31,7 +33,6 @@ void Window::update(float dt)
 {
     fps_counter(dt);
     ImGui_Context::begin();
-    ImGui::ShowDemoWindow();
     m_viewport.update(dt);
 }
 
@@ -42,7 +43,7 @@ void Window::render()
     m_viewport.render();
 
     ImGui_Context::end();
-    glfwSwapBuffers(m_window);
+    glfwSwapBuffers(m_glfw_window);
 }
 
 void Window::fps_counter(float dt)
@@ -61,12 +62,21 @@ void Window::fps_counter(float dt)
     }
 }
 
-void Window::key_callback(GLFWwindow *p_window, int key, int scancode, int action, int mods)
+void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int action, int mods)
 {
-    Window* window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(p_window));
+    Window* window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(window->m_window, GLFW_TRUE);
+        glfwSetWindowShouldClose(window->m_glfw_window, GLFW_TRUE);
     }
+}
+
+void Window::resize_callback(GLFWwindow *glfw_window, int width, int height)
+{
+    Window* window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
+
+    glViewport(0, 0, width, height);
+
+    window->m_viewport.resize(static_cast<uint32_t>(width), static_cast<uint32_t>(height));
 }

@@ -33,16 +33,16 @@ WindowBase::WindowBase(uint32_t width, uint32_t height)
 
     const char* window_title = "3D Model Viewer";
 
-    m_window = glfwCreateWindow(window_size.x, window_size.y, window_title, nullptr, nullptr);
+    m_glfw_window = glfwCreateWindow(window_size.x, window_size.y, window_title, nullptr, nullptr);
 
-    glfwMakeContextCurrent(m_window);
+    glfwMakeContextCurrent(m_glfw_window);
 
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
         throw std::runtime_error("WindowBase::WindowBase: Failed to load glad\n");
     }
 
-    ImGui_Context::init(m_window);
+    ImGui_Context::init(m_glfw_window);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -56,7 +56,7 @@ WindowBase::WindowBase(uint32_t width, uint32_t height)
 WindowBase::~WindowBase()
 {
     ImGui_Context::terminate();
-    glfwDestroyWindow(m_window);
+    glfwDestroyWindow(m_glfw_window);
     glfwTerminate();
 }
 

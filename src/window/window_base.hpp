@@ -20,7 +20,7 @@ public:
     virtual ~WindowBase();
 
 protected:
-    GLFWwindow* m_window;
+    GLFWwindow* m_glfw_window;
 };
 
 

@@ -21,7 +21,8 @@ private:
     void render();
     void fps_counter(float dt);
 
-    static void key_callback(GLFWwindow* p_window, int key, int scancode, int action, int mods);
+    static void key_callback(GLFWwindow* glfw_window, int key, int scancode, int action, int mods);
+    static void resize_callback(GLFWwindow* glfw_window, int width, int height);
 
 private:
     Viewport m_viewport;
