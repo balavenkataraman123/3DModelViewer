@@ -14,7 +14,9 @@ Mesh::Mesh(const std::vector<Vertex> &vertices,
     {
         {0, 3, GL_FLOAT, GL_FALSE},
         {1, 3, GL_FLOAT, GL_FALSE},
-        {2 , 2, GL_FLOAT, GL_FALSE}
+        {2, 3, GL_FLOAT, GL_FALSE},
+        {3, 3, GL_FLOAT, GL_FALSE},
+        {4, 2, GL_FLOAT, GL_FALSE}
     };
 
     m_vbo = {vertices.data(), static_cast<uint32_t>(vertices.size() * sizeof(Vertex))};
@@ -28,9 +30,11 @@ void Mesh::render(const Shader &shader) const
 {
     m_textures.at(aiTextureType_DIFFUSE)->bind(0);
     m_textures.at(aiTextureType_SPECULAR)->bind(1);
+    m_textures.at(aiTextureType_HEIGHT)->bind(2);
 
     shader.set_int("u_diffuse_map", 0);
     shader.set_int("u_specular_map", 1);
+    shader.set_int("u_normal_map", 2);
 
     m_vao.bind();
 
@@ -40,4 +44,5 @@ void Mesh::render(const Shader &shader) const
 
     m_textures.at(aiTextureType_DIFFUSE)->unbind(0);
     m_textures.at(aiTextureType_SPECULAR)->unbind(1);
+    m_textures.at(aiTextureType_HEIGHT)->unbind(2);
 }

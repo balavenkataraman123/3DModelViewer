@@ -100,7 +100,9 @@ std::vector<Vertex> Model::get_vertices(aiMesh *mesh)
         Vertex vertex
         {
             *reinterpret_cast<glm::vec3*>(&mesh->mVertices[i]),
-            *reinterpret_cast<glm::vec3*>(&mesh->mNormals[i])
+            *reinterpret_cast<glm::vec3*>(&mesh->mNormals[i]),
+            *reinterpret_cast<glm::vec3*>(&mesh->mTangents[i]),
+            *reinterpret_cast<glm::vec3*>(&mesh->mBitangents)
         };
 
         if (mesh->HasTextureCoords(0))
@@ -159,10 +161,8 @@ mesh_textures_t Model::get_textures(aiMesh *mesh, const aiScene *scene)
         return nullptr;
     };
 
-    textures[aiTextureType_AMBIENT] = get_tex_type(aiTextureType_AMBIENT);
     textures[aiTextureType_DIFFUSE] = get_tex_type(aiTextureType_DIFFUSE);
     textures[aiTextureType_SPECULAR] = get_tex_type(aiTextureType_SPECULAR);
-    textures[aiTextureType_SHININESS] = get_tex_type(aiTextureType_SHININESS);
     textures[aiTextureType_HEIGHT] = get_tex_type(aiTextureType_HEIGHT);
 
     return textures;

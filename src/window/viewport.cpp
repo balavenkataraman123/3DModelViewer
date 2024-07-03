@@ -19,7 +19,6 @@ void Viewport::update(float dt)
 
     static glm::vec3 translation {0, 0, -3.f};
     static glm::vec3 rotation {0, 0, 0};
-    static glm::vec3 directional_light_dir {-0.2, -1, -.3};
     static glm::vec3 point_light_pos {0, 0, 1};
 
     ImGui::Begin("debug");
@@ -27,7 +26,6 @@ void Viewport::update(float dt)
     ImGui::SliderFloat3("translation", reinterpret_cast<float*>(&translation), -10, 10);
     ImGui::SliderFloat3("rotation", reinterpret_cast<float*>(&rotation), -360, 360);
     ImGui::SeparatorText("Lights");
-    ImGui::SliderFloat3("directional light pos", reinterpret_cast<float*>(&directional_light_dir), -1, 1);
     ImGui::SliderFloat3("point light pos", reinterpret_cast<float*>(&point_light_pos), -10, 10);
     ImGui::End();
 
@@ -37,10 +35,9 @@ void Viewport::update(float dt)
     model = glm::rotate(model, glm::radians(rotation.z), {0, 0, 1});
 
     shader.bind();
-    shader.set_float3("u_directional_light_dir", directional_light_dir);
     shader.set_float3("u_point_light_pos", point_light_pos);
-    shader.set_float("u_kl", 0.045f);
-    shader.set_float("u_kq", 0.0075f);
+    shader.set_float("u_kl", 0.014f);
+    shader.set_float("u_kq", 0.0007f);
 }
 
 void Viewport::render()
