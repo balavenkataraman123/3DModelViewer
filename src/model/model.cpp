@@ -13,7 +13,8 @@ static constexpr uint32_t import_flags
     aiProcess_RemoveComponent |
     aiProcess_GenNormals |
     aiProcess_OptimizeMeshes |
-    aiProcess_OptimizeGraph
+    aiProcess_OptimizeGraph |
+    aiProcess_FlipUVs
 };
 
 static constexpr int remove_components
@@ -43,13 +44,22 @@ Model::Model(const std::string& filename)
     process_node(scene->mRootNode, scene);
 }
 
+
+void Model::render(const Shader &shader) const
+{
+    for (const auto& mesh : m_meshes)
+    {
+        mesh.render(shader);
+    }
+}
+
 void Model::process_node(aiNode *node, const aiScene *scene)
 {
     for (uint32_t i = 0; i < node->mNumMeshes; ++i)
     {
         uint32_t mesh_index = node->mMeshes[i];
         aiMesh* mesh = scene->mMeshes[mesh_index];
-        m_meshes.push_back(process_mesh(mesh, scene));
+        process_mesh(mesh, scene);
     }
 
     for (uint32_t i = 0; i < node->mNumChildren; ++i)
@@ -58,18 +68,21 @@ void Model::process_node(aiNode *node, const aiScene *scene)
     }
 }
 
-Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene)
+void Model::process_mesh(aiMesh *mesh, const aiScene *scene)
 {
     std::vector<Vertex> vertices = get_vertices(mesh);
     std::vector<uint32_t> indices = get_indices(mesh);
+    mesh_textures_t textures = get_textures(mesh, scene);
 
+    m_meshes.emplace_back(vertices, indices, std::move(textures));
 }
 
 std::vector<Vertex> Model::get_vertices(aiMesh *mesh)
 {
     const size_t vertex_count = mesh->mNumVertices;
 
-    std::vector<Vertex> vertices(vertex_count);
+    std::vector<Vertex> vertices;
+    vertices.reserve(vertex_count);
 
     for (uint32_t i = 0; i < vertex_count; ++i)
     {
@@ -94,6 +107,7 @@ std::vector<Vertex> Model::get_vertices(aiMesh *mesh)
 std::vector<uint32_t> Model::get_indices(aiMesh *mesh)
 {
     std::vector<uint32_t> indices;
+    indices.reserve(mesh->mNumFaces * 3);
 
     for (uint32_t i = 0, face_count = mesh->mNumFaces; i < face_count; ++i)
     {
@@ -104,35 +118,41 @@ std::vector<uint32_t> Model::get_indices(aiMesh *mesh)
     return indices;
 }
 
-std::vector<Texture2D> Model::get_textures(aiMesh *mesh, const aiScene *scene)
+mesh_textures_t Model::get_textures(aiMesh *mesh, const aiScene *scene)
 {
+    mesh_textures_t textures;
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-    auto get_textures_by_type = [&, this] (aiTextureType texture_type)
+    static auto get_tex_type = [&, this] (aiTextureType type) -> std::shared_ptr<Texture2D>
     {
-        std::vector<Texture2D> textures;
+        aiString filename;
 
-        for (uint32_t i = 0, tex_count = material->GetTextureCount(texture_type); i < tex_count; ++i)
+        if (material->GetTextureCount(type))
         {
-            aiString str;
-            material->GetTexture(texture_type, i, &str);
+            material->GetTexture(type, 0, &filename);
 
+            std::string path = m_directory + std::string(filename.C_Str());
 
+            if (m_loaded_textures.contains(path))
+            {
+               return m_loaded_textures.at(path);
+            }
+            else
+            {
+                auto mesh_texture = std::make_shared<Texture2D>(path.c_str());
+                m_loaded_textures[path] = mesh_texture;
+                return mesh_texture;
+            }
         }
+
+        return nullptr;
     };
+
+    textures[aiTextureType_AMBIENT] = get_tex_type(aiTextureType_AMBIENT);
+    textures[aiTextureType_DIFFUSE] = get_tex_type(aiTextureType_DIFFUSE);
+    textures[aiTextureType_SPECULAR] = get_tex_type(aiTextureType_SPECULAR);
+    textures[aiTextureType_SHININESS] = get_tex_type(aiTextureType_SHININESS);
+    textures[aiTextureType_HEIGHT] = get_tex_type(aiTextureType_HEIGHT);
+
+    return textures;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -19,17 +19,19 @@ public:
     Model() = default;
     Model(const std::string& filename);
 
+    void render(const Shader& shader) const;
+
 private:
     void process_node(aiNode* node, const aiScene* scene);
-    Mesh process_mesh(aiMesh* mesh, const aiScene* scene);
+    void process_mesh(aiMesh* mesh, const aiScene* scene);
 
     std::vector<Vertex> get_vertices(aiMesh* mesh);
     std::vector<uint32_t> get_indices(aiMesh* mesh);
-    std::vector<Texture2D> get_textures(aiMesh* mesh, const aiScene* scene);
+    mesh_textures_t get_textures(aiMesh* mesh, const aiScene* scene);
 
 private:
     std::vector<Mesh> m_meshes;
-    std::unordered_map<const char*, bool> m_cache;
+    std::unordered_map<std::string, std::shared_ptr<Texture2D>> m_loaded_textures;
     std::string m_directory;
 };
 

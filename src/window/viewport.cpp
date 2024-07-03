@@ -5,14 +5,12 @@
 #include "viewport.hpp"
 
 
-void build_cube(VertexArray& vao, VertexBufferStatic& vbo);
-
 Viewport::Viewport(uint32_t width, uint32_t height)
-    : shader("../shaders/test.vert", "../shaders/test.frag")
+    : shader("../shaders/model.vert", "../shaders/model.frag")
     , pers_camera(static_cast<float>(width), static_cast<float>(height), glm::radians(45.f))
     , ortho_camera(-1.f, 1.f, -1.f, 1.f)
+    , backpack("../assets/models/backpack/backpack.obj")
 {
-    build_cube(vao, vbo);
 }
 
 void Viewport::update(float dt)
@@ -31,11 +29,9 @@ void Viewport::update(float dt)
 void Viewport::render()
 {
     shader.bind();
-    shader.set_mat4("u_model", model);
     shader.set_mat4("u_proj", pers_camera.projection());
-    vao.bind();
-
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    shader.set_mat4("u_model", model);
+    backpack.render(shader);
 }
 
 void Viewport::menu_bar()
@@ -104,58 +100,4 @@ void Viewport::menu_bar()
 void Viewport::resize(uint32_t width, uint32_t height)
 {
     pers_camera.resize(width, height);
-}
-
-void build_cube(VertexArray& vao, VertexBufferStatic& vbo)
-{
-    float vertices[]
-    {
-        -0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-
-        -0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        -0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-    };
-
-    vbo = {vertices, sizeof(vertices)};
-
-    VertexBufferLayout layout {{0, 3}};
-
-    vao.attach_vertex_buffer(vbo, layout);
 }

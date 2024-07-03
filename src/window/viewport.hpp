@@ -11,6 +11,7 @@
 #include "../opengl/includes.hpp"
 #include "../camera/perspective_camera.hpp"
 #include "../camera/orthographic_camera.hpp"
+#include "../model/model.hpp"
 
 
 class Viewport
@@ -27,11 +28,10 @@ private:
     void menu_bar();
 
 private:
-    VertexArray vao;
-    VertexBufferStatic vbo;
     Shader shader;
     PerspectiveCamera pers_camera;
     OrthographicCamera ortho_camera;
+    Model backpack;
     glm::mat4 model;
 };
 
