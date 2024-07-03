@@ -4,7 +4,7 @@
 
 #include "model.hpp"
 
-// todo: check pre transform vertex
+
 static constexpr uint32_t import_flags
 {
     aiProcess_CalcTangentSpace |
@@ -14,7 +14,10 @@ static constexpr uint32_t import_flags
     aiProcess_GenNormals |
     aiProcess_OptimizeMeshes |
     aiProcess_OptimizeGraph |
-    aiProcess_FlipUVs
+    aiProcess_FlipUVs |
+    aiProcess_PreTransformVertices |
+    aiProcess_RemoveRedundantMaterials |
+    aiProcess_SortByPType
 };
 
 static constexpr int remove_components
@@ -26,11 +29,19 @@ static constexpr int remove_components
     aiComponent_CAMERAS
 };
 
+static constexpr int remove_primitives
+{
+    aiPrimitiveType_POINT |
+    aiPrimitiveType_LINE
+};
+
 
 Model::Model(const std::string& filename)
 {
     Assimp::Importer importer;
     importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, remove_components);
+    importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, remove_primitives);
+    importer.SetPropertyBool(AI_CONFIG_PP_PTV_NORMALIZE, true);
 
     const aiScene* scene = importer.ReadFile(filename, import_flags);
 
@@ -84,7 +95,7 @@ std::vector<Vertex> Model::get_vertices(aiMesh *mesh)
     std::vector<Vertex> vertices;
     vertices.reserve(vertex_count);
 
-    for (uint32_t i = 0; i < vertex_count; ++i)
+    for (size_t i = 0; i < vertex_count; ++i)
     {
         Vertex vertex
         {
