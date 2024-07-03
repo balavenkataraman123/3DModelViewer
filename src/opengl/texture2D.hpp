@@ -27,7 +27,7 @@ public:
     Texture2D(Texture2D&& other) noexcept;
     Texture2D& operator=(Texture2D&& other) noexcept;
 
-    void bind(uint32_t slot = 0);
+    void bind(uint32_t slot = 0) const;
     void unbind(uint32_t slot = 0) const;
 
     uint32_t id() const;
@@ -53,11 +53,11 @@ struct Texture2DSpec
     bool generate_mips;
 
     Texture2DSpec(const char* filename)
-            : filename(filename)
-            , wrap(GL_REPEAT)
-            , min_filter(GL_LINEAR_MIPMAP_LINEAR)
-            , mag_filter(GL_LINEAR)
-            , generate_mips(true)
+        : filename(filename)
+        , wrap(GL_REPEAT)
+        , min_filter(GL_LINEAR_MIPMAP_LINEAR)
+        , mag_filter(GL_LINEAR)
+        , generate_mips(true)
     {
     }
 };

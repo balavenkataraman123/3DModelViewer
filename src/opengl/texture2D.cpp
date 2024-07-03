@@ -62,7 +62,7 @@ Texture2D &Texture2D::operator=(Texture2D &&other) noexcept
     return *this;
 }
 
-void Texture2D::bind(uint32_t slot)
+void Texture2D::bind(uint32_t slot) const
 {
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, m_renderer_id);
@@ -102,6 +102,11 @@ void Texture2D::load(const Texture2DSpec &spec, uint32_t *id, int *width, int *h
 
     int channels;
     uint8_t* data = stbi_load(spec.filename, width? width : &_w, height? height : &_h, &channels, 0);
+
+    if (!data)
+    {
+        throw std::runtime_error("Texture2D::load: Failed to load texture \"" + std::string(spec.filename) + "\"");
+    }
 
     int format;
     switch (channels)
