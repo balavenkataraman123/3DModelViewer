@@ -27,8 +27,10 @@ Mesh::Mesh(const std::vector<Vertex> &vertices,
 void Mesh::render(const Shader &shader) const
 {
     m_textures.at(aiTextureType_DIFFUSE)->bind(0);
+    m_textures.at(aiTextureType_SPECULAR)->bind(1);
 
     shader.set_int("u_diffuse_map", 0);
+    shader.set_int("u_specular_map", 1);
 
     m_vao.bind();
 
@@ -37,4 +39,5 @@ void Mesh::render(const Shader &shader) const
     m_vao.unbind();
 
     m_textures.at(aiTextureType_DIFFUSE)->unbind(0);
+    m_textures.at(aiTextureType_SPECULAR)->unbind(1);
 }
