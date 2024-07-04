@@ -48,14 +48,12 @@ add_executable(3DModelViewer
         src/imgui/im_gui_context.hpp
         src/window/viewport.cpp
         src/window/viewport.hpp
-        src/camera/orthographic_camera.cpp
-        src/camera/orthographic_camera.hpp
-        src/camera/perspective_camera.cpp
-        src/camera/perspective_camera.hpp
         src/model/mesh.cpp
         src/model/mesh.hpp
         src/model/model.cpp
-        src/model/model.hpp)
+        src/model/model.hpp
+        src/camera/camera.cpp
+        src/camera/camera.hpp)
 
 find_package(OpenGL REQUIRED)
 

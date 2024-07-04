@@ -6,6 +6,7 @@ in mat3 v_tbn_mat;
 
 out vec4 color;
 
+uniform vec3 u_dir_light_dir;
 uniform vec3 u_view_pos;
 uniform float u_kl;
 uniform float u_kq;
@@ -49,9 +50,10 @@ void main()
     vec3 specular_sample = texture(u_specular_map, v_tex_coords).rgb;
     vec3 normal_sample = texture(u_normal_map, v_tex_coords).rgb * 2.f - 1.f;
     vec3 normal = normalize(v_tbn_mat * normal_sample);
-    vec3 light_dir = normalize(v_frag_pos - u_view_pos);
+    vec3 point_light_dir = normalize(v_frag_pos - u_view_pos);
 
-    vec3 light_value = calculate_light(diffuse_sample, specular_sample, normal, light_dir);
+    vec3 dir_light_value = calculate_light(diffuse_sample, specular_sample, normal, normalize(u_dir_light_dir));
+    vec3 point_light_value = calculate_light(diffuse_sample, specular_sample, normal, point_light_dir) * attenuation();
 
-    color = vec4(light_value * attenuation(), 1.f);
+    color = vec4(dir_light_value + point_light_value, 1.f);
 }

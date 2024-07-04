@@ -8,10 +8,10 @@
 #include <cstdint>
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
+#include <glfw/glfw3.h>
 #include "../opengl/includes.hpp"
-#include "../camera/perspective_camera.hpp"
-#include "../camera/orthographic_camera.hpp"
 #include "../model/model.hpp"
+#include "../camera/camera.hpp"
 
 
 class Viewport
@@ -29,10 +29,14 @@ private:
 
 private:
     Shader shader;
-    PerspectiveCamera pers_camera;
-    OrthographicCamera ortho_camera;
     Model backpack;
+    Camera camera;
+    Framebuffer depth_fbo;
+
     glm::mat4 model;
+    glm::vec3 dir_light;
+
+    glm::mat4 light_proj_view;
 };
 
 

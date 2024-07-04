@@ -7,45 +7,46 @@
 
 Viewport::Viewport(uint32_t width, uint32_t height)
     : shader("../shaders/model.vert", "../shaders/model.frag")
-    , pers_camera(static_cast<float>(width), static_cast<float>(height), glm::radians(45.f))
-    , ortho_camera(-1.f, 1.f, -1.f, 1.f)
     , backpack("../assets/models/backpack/backpack.obj")
+    , depth_fbo(width, height, Framebuffer::Type::DEPTH)
+    , dir_light(-1, -1.f, 0)
+    , camera(width, height, glm::radians(45.f))
 {
+    camera.set_position(0, 0, 4);
+
+    light_proj_view = glm::ortho(-10.f, 10.f, -10.f, 10.f, 0.1f, 100.f)
+                      * glm::lookAt(-5.f * dir_light, glm::vec3(0.f), glm::vec3(0, 1.f, 0));
 }
 
 void Viewport::update(float dt)
 {
     menu_bar();
 
-    static glm::vec3 translation {0, 0, -3.f};
     static glm::vec3 rotation {0, 0, 0};
-    static glm::vec3 point_light_pos {0, 0, 1};
 
     ImGui::Begin("debug");
     ImGui::SeparatorText("Model");
-    ImGui::SliderFloat3("translation", reinterpret_cast<float*>(&translation), -10, 10);
     ImGui::SliderFloat3("rotation", reinterpret_cast<float*>(&rotation), -360, 360);
     ImGui::SeparatorText("Lights");
-    ImGui::SliderFloat3("point light pos", reinterpret_cast<float*>(&point_light_pos), -10, 10);
+    ImGui::SliderFloat3("dir light", reinterpret_cast<float*>(&dir_light), -10, 10);
     ImGui::End();
 
-    model = glm::translate(glm::mat4(1.f), translation);
-    model = glm::rotate(model, glm::radians(rotation.x), {1, 0, 0});
+    model = glm::rotate(glm::mat4(1.f), glm::radians(rotation.x), {1, 0, 0});
     model = glm::rotate(model, glm::radians(rotation.y), {0, 1, 0});
     model = glm::rotate(model, glm::radians(rotation.z), {0, 0, 1});
-
-    shader.bind();
-    shader.set_float3("u_point_light_pos", point_light_pos);
-    shader.set_float("u_kl", 0.014f);
-    shader.set_float("u_kq", 0.0007f);
 }
 
 void Viewport::render()
 {
-    shader.set_float3("u_view_pos", 0, 0, 0);
-    shader.set_mat4("u_proj", pers_camera.projection());
+    shader.bind();
+    shader.set_float("u_kl", 0.014f);
+    shader.set_float("u_kq", 0.0007f);
+    shader.set_float3("u_view_pos", camera.position());
+    shader.set_mat4("u_proj_view", camera.proj_view());
     shader.set_mat4("u_model", model);
+    shader.set_float3("u_dir_light_dir", dir_light);
     backpack.render(shader);
+    shader.unbind();
 }
 
 void Viewport::menu_bar()
@@ -113,5 +114,5 @@ void Viewport::menu_bar()
 
 void Viewport::resize(uint32_t width, uint32_t height)
 {
-    pers_camera.resize(width, height);
+    camera.resize(width, height);
 }

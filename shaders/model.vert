@@ -10,12 +10,12 @@ out vec3 v_frag_pos;
 out vec2 v_tex_coords;
 out mat3 v_tbn_mat;
 
-uniform mat4 u_proj;
+uniform mat4 u_proj_view;
 uniform mat4 u_model;
 
 void main()
 {
-    gl_Position = u_proj * u_model * vec4(position, 1.f);
+    gl_Position = u_proj_view * u_model * vec4(position, 1.f);
 
     v_frag_pos = vec3(u_model * vec4(position, 1.f));
     v_tex_coords = tex_coords;
