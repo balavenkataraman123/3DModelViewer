@@ -13,6 +13,9 @@ Window::Window(uint32_t width, uint32_t height)
     glfwSetWindowUserPointer(m_glfw_window, this);
     glfwSetKeyCallback(m_glfw_window, key_callback);
     glfwSetWindowSizeCallback(m_glfw_window, resize_callback);
+    glfwSetMouseButtonCallback(m_glfw_window, mouse_button_callback);
+    glfwSetCursorPosCallback(m_glfw_window, cursor_pos_callback);
+    glfwSetScrollCallback(m_glfw_window, scroll_callback);
     camera.set_position(0, 0, 4);
 }
 
@@ -121,6 +124,8 @@ void Window::update_model_matrix()
 
 void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int action, int mods)
 {
+    ImGui_ImplGlfw_KeyCallback(glfw_window, key, scancode, action, mods);
+
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -140,7 +145,34 @@ void Window::resize_callback(GLFWwindow *glfw_window, int width, int height)
 
 void Window::mouse_button_callback(GLFWwindow *glfw_window, int button, int action, int mods)
 {
+    ImGui_ImplGlfw_MouseButtonCallback(glfw_window, button, action, mods);
+
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
+    if (button == GLFW_MOUSE_BUTTON_LEFT)
+    {
+        if (action == GLFW_PRESS)
+        {
+            puts("press");
+        }
+        else if (action == GLFW_RELEASE)
+        {
+            puts("release");
+        }
+    }
+}
 
+void Window::cursor_pos_callback(GLFWwindow *glfw_window, double x, double y)
+{
+    ImGui_ImplGlfw_CursorPosCallback(glfw_window, x, y);
+
+    Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
+
+}
+
+void Window::scroll_callback(GLFWwindow *glfw_window, double x_offset, double y_offset)
+{
+    ImGui_ImplGlfw_ScrollCallback(glfw_window, x_offset, y_offset);
+
+    Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 }

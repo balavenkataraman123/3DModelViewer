@@ -28,6 +28,8 @@ private:
     static void key_callback(GLFWwindow* glfw_window, int key, int scancode, int action, int mods);
     static void resize_callback(GLFWwindow* glfw_window, int width, int height);
     static void mouse_button_callback(GLFWwindow* glfw_window, int button, int action, int mods);
+    static void cursor_pos_callback(GLFWwindow* glfw_window, double x, double y);
+    static void scroll_callback(GLFWwindow* glfw_window, double x_offset, double y_offset);
 
 private:
     Shader shader;
