@@ -31,12 +31,7 @@ private:
     Shader shader;
     Model backpack;
     Camera camera;
-    Framebuffer depth_fbo;
-
     glm::mat4 model;
-    glm::vec3 dir_light;
-
-    glm::mat4 light_proj_view;
 };
 
 

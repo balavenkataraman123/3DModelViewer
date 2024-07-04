@@ -55,7 +55,6 @@ Model::Model(const std::string& filename)
     process_node(scene->mRootNode, scene);
 }
 
-
 void Model::render(const Shader &shader) const
 {
     for (const auto& mesh : m_meshes)
