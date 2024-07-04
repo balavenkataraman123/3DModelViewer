@@ -46,8 +46,6 @@ add_executable(3DModelViewer
         src/opengl/framebuffer.hpp
         src/imgui/im_gui_context.cpp
         src/imgui/im_gui_context.hpp
-        src/window/viewport.cpp
-        src/window/viewport.hpp
         src/model/mesh.cpp
         src/model/mesh.hpp
         src/model/model.cpp

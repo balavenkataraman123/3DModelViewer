@@ -6,11 +6,14 @@
 
 Window::Window(uint32_t width, uint32_t height)
     : WindowBase(width, height)
-    , m_viewport(width, height)
+    , shader("../shaders/model.vert", "../shaders/model.frag")
+    , backpack("../assets/models/backpack/backpack.obj")
+    , camera(width, height, glm::radians(45.f))
 {
     glfwSetWindowUserPointer(m_glfw_window, this);
     glfwSetKeyCallback(m_glfw_window, key_callback);
     glfwSetWindowSizeCallback(m_glfw_window, resize_callback);
+    camera.set_position(0, 0, 4);
 }
 
 void Window::run()
@@ -31,9 +34,10 @@ void Window::run()
 
 void Window::update(float dt)
 {
-    fps_counter(dt);
     ImGui_Context::begin();
-    m_viewport.update(dt);
+    fps_counter(dt);
+    menu_bar();
+    update_model_matrix();
 }
 
 void Window::render()
@@ -41,7 +45,12 @@ void Window::render()
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    m_viewport.render();
+    shader.bind();
+    shader.set_float3("u_view_pos", camera.position());
+    shader.set_mat4("u_proj_view", camera.proj_view());
+    shader.set_mat4("u_model", model);
+    backpack.render(shader);
+    shader.unbind();
 
     ImGui_Context::end();
     glfwSwapBuffers(m_glfw_window);
@@ -63,21 +72,75 @@ void Window::fps_counter(float dt)
     }
 }
 
+void Window::menu_bar()
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Open...", "Ctrl+O"))
+            {
+                puts("Open");
+            }
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Settings"))
+        {
+            if (ImGui::MenuItem("Fit to View", "Ctrl+V"))
+            {
+                puts("Fit to view");
+            }
+
+            if (ImGui::MenuItem("Fix Orientation", "Ctrl+F"))
+            {
+                puts("Fix orientation");
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+}
+
+void Window::update_model_matrix()
+{
+    static glm::vec3 rotation {0, 0, 0};
+
+    ImGui::Begin("debug");
+    ImGui::SeparatorText("Model");
+    ImGui::SliderFloat3("rotation", reinterpret_cast<float*>(&rotation), -360, 360);
+    ImGui::End();
+
+    model = glm::rotate(glm::mat4(1.f), glm::radians(rotation.x), {1, 0, 0});
+    model = glm::rotate(model, glm::radians(rotation.y), {0, 1, 0});
+    model = glm::rotate(model, glm::radians(rotation.z), {0, 0, 1});
+}
+
 void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int action, int mods)
 {
-    Window* window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
+    Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(window->m_glfw_window, GLFW_TRUE);
+        glfwSetWindowShouldClose(window.m_glfw_window, GLFW_TRUE);
     }
 }
 
 void Window::resize_callback(GLFWwindow *glfw_window, int width, int height)
 {
-    Window* window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
+    Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
     glViewport(0, 0, width, height);
 
-    window->m_viewport.resize(static_cast<uint32_t>(width), static_cast<uint32_t>(height));
+    window.camera.resize(width, height);
+}
+
+void Window::mouse_button_callback(GLFWwindow *glfw_window, int button, int action, int mods)
+{
+    Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
+
+
 }
