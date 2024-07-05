@@ -14,7 +14,6 @@ class Camera
 public:
     Camera();
     Camera(float width, float height, float fov, float near = 0.1f, float far = 100.f);
-    Camera(float left, float right, float bottom, float top, float near = 0.1f, float far = 100.f);
 
     void set_position(const glm::vec3& position);
     void set_position(float x, float y, float z);
@@ -33,6 +32,9 @@ private:
     glm::mat4 m_view;
     glm::mat4 m_proj_view;
     glm::vec3 m_position;
+    float m_fov;
+    float m_near;
+    float m_far;
 };
 
 

@@ -11,10 +11,6 @@ uniform sampler2D u_diffuse_map;
 uniform sampler2D u_specular_map;
 uniform sampler2D u_normal_map;
 
-#define light_color vec3(1.f, 1.f, 1.f)
-#define ambient_intensity 0.2f
-#define shininess 32.f
-
 void main()
 {
     vec3 diffuse_sample = texture(u_diffuse_map, v_tex_coords).rgb;
@@ -24,17 +20,17 @@ void main()
     vec3 light_dir = normalize(v_frag_pos - u_view_pos);
 
     // ambient
-    vec3 ambient = light_color * diffuse_sample * ambient_intensity;
+    vec3 ambient = diffuse_sample * 0.2f;
 
     // diffuse
     float cos_theta_diff = max(dot(-light_dir, normal), 0.f);
-    vec3 diffuse = light_color * diffuse_sample * cos_theta_diff;
+    vec3 diffuse = diffuse_sample * cos_theta_diff;
 
     // specular
     vec3 reflected_dir = reflect(light_dir, normal);
     vec3 view_dir = normalize(u_view_pos - v_frag_pos);
     float cos_theta_spec = max(dot(view_dir, reflected_dir), 0.f);
-    vec3 specular = light_color * specular_sample * pow(cos_theta_spec, shininess);
+    vec3 specular = specular_sample * pow(cos_theta_spec, 128.f);
 
     color = vec4(ambient + diffuse + specular, 1.f);
 }

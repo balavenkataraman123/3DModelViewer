@@ -5,11 +5,7 @@
 #include "camera.hpp"
 
 
-Camera::Camera()
-    : m_projection()
-    , m_view()
-    , m_proj_view()
-    , m_position()
+Camera::Camera() : Camera(0, 0, 0, 0, 0)
 {
 }
 
@@ -18,14 +14,9 @@ Camera::Camera(float width, float height, float fov, float near, float far)
     , m_view()
     , m_proj_view(m_projection)
     , m_position()
-{
-}
-
-Camera::Camera(float left, float right, float bottom, float top, float near, float far)
-    : m_projection(glm::ortho(left, right, bottom, top, near, far))
-    , m_view()
-    , m_proj_view(m_projection)
-    , m_position()
+    , m_fov(fov)
+    , m_near(near)
+    , m_far(far)
 {
 }
 
@@ -42,7 +33,8 @@ void Camera::set_position(float x, float y, float z)
 
 void Camera::resize(float width, float height)
 {
-    // todo: implement
+    m_projection = glm::perspective(m_fov, width / height, m_near, m_far);
+    m_proj_view = m_projection * m_view;
 }
 
 const glm::mat4 &Camera::projection() const
