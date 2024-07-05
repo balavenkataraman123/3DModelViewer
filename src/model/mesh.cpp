@@ -28,13 +28,31 @@ Mesh::Mesh(const std::vector<Vertex> &vertices,
 
 void Mesh::render(const Shader &shader) const
 {
-    m_textures.at(aiTextureType_DIFFUSE)->bind(0);
-    m_textures.at(aiTextureType_SPECULAR)->bind(1);
-    m_textures.at(aiTextureType_HEIGHT)->bind(2);
+    bool has_diffuse = m_textures.at(aiTextureType_DIFFUSE).operator bool();
+    bool has_specular = m_textures.at(aiTextureType_SPECULAR).operator bool();
+    bool has_normal = m_textures.at(aiTextureType_HEIGHT).operator bool();
 
-    shader.set_int("u_diffuse_map", 0);
-    shader.set_int("u_specular_map", 1);
-    shader.set_int("u_normal_map", 2);
+    if (has_diffuse)
+    {
+        m_textures.at(aiTextureType_DIFFUSE)->bind(0);
+        shader.set_int("u_diffuse_map", 0);
+    }
+
+    if (has_specular)
+    {
+        m_textures.at(aiTextureType_SPECULAR)->bind(1);
+        shader.set_int("u_specular_map", 1);
+    }
+
+    if (has_normal)
+    {
+        m_textures.at(aiTextureType_HEIGHT)->bind(2);
+        shader.set_int("u_normal_map", 2);
+    }
+
+    shader.set_int("u_has_diffuse", has_diffuse);
+    shader.set_int("u_has_specular", has_specular);
+    shader.set_int("u_has_normal", has_normal);
 
     m_vao.bind();
 

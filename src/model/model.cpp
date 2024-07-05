@@ -38,6 +38,19 @@ static constexpr int remove_primitives
 
 Model::Model(const std::string& filename)
 {
+    import(filename);
+}
+
+void Model::import(const std::string& filename)
+{
+    clear();
+
+    m_directory = filename.substr(0, filename.find_last_of('/') + 1);
+    m_model_name = filename.substr(filename.find_last_of('/') + 1);
+
+    system("cls");
+    std::cout << "ModelLoader: Loading model " + m_model_name << '\n';
+
     Assimp::Importer importer;
     importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, remove_components);
     importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, remove_primitives);
@@ -49,8 +62,6 @@ Model::Model(const std::string& filename)
     {
         throw std::runtime_error("Model::Model: " + std::string(importer.GetErrorString()));
     }
-
-    m_directory = filename.substr(0, filename.find_last_of('/') + 1);
 
     process_node(scene->mRootNode, scene);
 }
@@ -164,5 +175,33 @@ mesh_textures_t Model::get_textures(aiMesh *mesh, const aiScene *scene)
     textures[aiTextureType_SPECULAR] = get_tex_type(aiTextureType_SPECULAR);
     textures[aiTextureType_HEIGHT] = get_tex_type(aiTextureType_HEIGHT);
 
+    std::string mesh_name = mesh->mName.C_Str();
+
+    if (!textures.at(aiTextureType_DIFFUSE))
+    {
+        std::cout << "\033[31mModelLoader: Failed to retrieve diffuse map for [model: "
+                  << m_model_name << ", mesh: " << mesh_name << "]\033[0m\n";
+    }
+
+    if (!textures.at(aiTextureType_SPECULAR))
+    {
+        std::cout << "\033[31mModelLoader: Failed to retrieve specular map for [model: "
+                  << m_model_name << ", mesh: " << mesh_name << "]\033[0m\n";
+    }
+
+    if (!textures.at(aiTextureType_HEIGHT))
+    {
+        std::cout << "\033[31mModelLoader: Failed to retrieve normal map for [model: "
+                  << m_model_name << ", mesh: " << mesh_name << "]\033[0m\n";
+    }
+
     return textures;
+}
+
+void Model::clear()
+{
+    std::vector<Mesh>().swap(m_meshes);
+    std::unordered_map<std::string, std::shared_ptr<Texture2D>>().swap(m_loaded_textures);
+    std::string().swap(m_directory);
+    std::string().swap(m_model_name);
 }

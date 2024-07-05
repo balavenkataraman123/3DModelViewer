@@ -6,6 +6,7 @@
 #define INC_3DMODELVIEWER_MODEL_HPP
 
 #include <string>
+#include <iostream>
 #include <unordered_map>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -19,6 +20,7 @@ public:
     Model() = default;
     Model(const std::string& filename);
 
+    void import(const std::string& filename);
     void render(const Shader& shader) const;
 
 private:
@@ -29,10 +31,13 @@ private:
     std::vector<uint32_t> get_indices(aiMesh* mesh);
     mesh_textures_t get_textures(aiMesh* mesh, const aiScene* scene);
 
+    void clear();
+
 private:
     std::vector<Mesh> m_meshes;
     std::unordered_map<std::string, std::shared_ptr<Texture2D>> m_loaded_textures;
     std::string m_directory;
+    std::string m_model_name;
 };
 
 
