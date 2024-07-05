@@ -35,7 +35,14 @@ private:
     Shader shader;
     Model backpack;
     Camera camera;
-    glm::mat4 model;
+
+    glm::mat4 m_model;
+    bool m_button_down;
+    double m_cursor_pos_x;
+    double m_cursor_pos_y;
+    float m_rotation_x;
+    float m_rotation_y;
+    float m_orbit_nav_sensitivity;
 };
 
 

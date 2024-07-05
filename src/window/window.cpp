@@ -4,11 +4,19 @@
 
 #include "window.hpp"
 
+
 Window::Window(uint32_t width, uint32_t height)
     : WindowBase(width, height)
     , shader("../shaders/model.vert", "../shaders/model.frag")
     , backpack("../assets/models/backpack/backpack.obj")
     , camera(width, height, glm::radians(45.f))
+    , m_model(1.f)
+    , m_button_down()
+    , m_cursor_pos_x()
+    , m_cursor_pos_y()
+    , m_rotation_x()
+    , m_rotation_y()
+    , m_orbit_nav_sensitivity(0.1f)
 {
     glfwSetWindowUserPointer(m_glfw_window, this);
     glfwSetKeyCallback(m_glfw_window, key_callback);
@@ -40,7 +48,6 @@ void Window::update(float dt)
     ImGui_Context::begin();
     fps_counter(dt);
     menu_bar();
-    update_model_matrix();
 }
 
 void Window::render()
@@ -51,7 +58,7 @@ void Window::render()
     shader.bind();
     shader.set_float3("u_view_pos", camera.position());
     shader.set_mat4("u_proj_view", camera.proj_view());
-    shader.set_mat4("u_model", model);
+    shader.set_mat4("u_model", m_model);
     backpack.render(shader);
     shader.unbind();
 
@@ -110,16 +117,10 @@ void Window::menu_bar()
 
 void Window::update_model_matrix()
 {
-    static glm::vec3 rotation {0, 0, 0};
+    static constexpr glm::mat4 identity(1.f);
 
-    ImGui::Begin("debug");
-    ImGui::SeparatorText("Model");
-    ImGui::SliderFloat3("rotation", reinterpret_cast<float*>(&rotation), -360, 360);
-    ImGui::End();
-
-    model = glm::rotate(glm::mat4(1.f), glm::radians(rotation.x), {1, 0, 0});
-    model = glm::rotate(model, glm::radians(rotation.y), {0, 1, 0});
-    model = glm::rotate(model, glm::radians(rotation.z), {0, 0, 1});
+    m_model = glm::rotate(identity, glm::radians(m_rotation_x), {0.f, 1.f, 0.f});
+    m_model = glm::rotate(m_model, glm::radians(m_rotation_y), {1.f, 0.f, 0.f});
 }
 
 void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int action, int mods)
@@ -153,11 +154,11 @@ void Window::mouse_button_callback(GLFWwindow *glfw_window, int button, int acti
     {
         if (action == GLFW_PRESS)
         {
-            puts("press");
+            window.m_button_down = true;
         }
         else if (action == GLFW_RELEASE)
         {
-            puts("release");
+            window.m_button_down = false;
         }
     }
 }
@@ -168,6 +169,24 @@ void Window::cursor_pos_callback(GLFWwindow *glfw_window, double x, double y)
 
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
+    if (window.m_button_down)
+    {
+        double dx = x - window.m_cursor_pos_x;
+        double dy = y - window.m_cursor_pos_y;
+
+        window.m_rotation_x += dx * window.m_orbit_nav_sensitivity;
+        window.m_rotation_y += dy * window.m_orbit_nav_sensitivity;
+
+        if (glm::abs(window.m_rotation_y) > 90.f)
+        {
+            window.m_rotation_y = glm::clamp(window.m_rotation_y, -90.f, 90.f);
+        }
+
+        window.update_model_matrix();
+    }
+
+    window.m_cursor_pos_x = x;
+    window.m_cursor_pos_y = y;
 }
 
 void Window::scroll_callback(GLFWwindow *glfw_window, double x_offset, double y_offset)
