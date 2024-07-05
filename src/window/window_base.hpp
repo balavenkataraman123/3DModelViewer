@@ -10,7 +10,6 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 #include <glm/glm.hpp>
-#include "../imgui/im_gui_context.hpp"
 
 
 class WindowBase

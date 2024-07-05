@@ -46,9 +46,7 @@ void Window::run()
 
 void Window::update(float dt)
 {
-    ImGui_Context::begin();
     fps_counter(dt);
-    menu_bar();
 }
 
 void Window::render()
@@ -63,7 +61,6 @@ void Window::render()
     backpack.render(shader);
     shader.unbind();
 
-    ImGui_Context::end();
     glfwSwapBuffers(m_glfw_window);
 }
 
@@ -71,42 +68,9 @@ void Window::update_model_matrix()
 {
     static constexpr glm::mat4 identity(1.f);
 
-    m_model = glm::rotate(identity, glm::radians(m_rotation_x), {0.f, 1.f, 0.f});
-    m_model = glm::rotate(m_model, glm::radians(m_rotation_y), {1.f, 0.f, 0.f});
+    m_model = glm::rotate(identity, glm::radians(m_rotation_y), {1.f, 0.f, 0.f});
+    m_model = glm::rotate(m_model, glm::radians(m_rotation_x), {0.f, 1.f, 0.f});
     m_model = glm::scale(m_model, glm::vec3(m_scale));
-}
-
-void Window::menu_bar()
-{
-    if (ImGui::BeginMainMenuBar())
-    {
-        if (ImGui::BeginMenu("File"))
-        {
-            if (ImGui::MenuItem("Open...", "Ctrl+O"))
-            {
-                puts("Open");
-            }
-
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Settings"))
-        {
-            if (ImGui::MenuItem("Fit to View", "Ctrl+V"))
-            {
-                puts("Fit to view");
-            }
-
-            if (ImGui::MenuItem("Fix Orientation", "Ctrl+F"))
-            {
-                puts("Fix orientation");
-            }
-
-            ImGui::EndMenu();
-        }
-
-        ImGui::EndMainMenuBar();
-    }
 }
 
 void Window::fps_counter(float dt)
@@ -119,7 +83,7 @@ void Window::fps_counter(float dt)
 
     if (fps_update_time > 1)
     {
-       // std::cout << "Fps: " << frame_count << std::endl;
+        std::cout << "Fps: " << frame_count << std::endl;
         frame_count = 0;
         fps_update_time -= 1;
     }
@@ -127,8 +91,6 @@ void Window::fps_counter(float dt)
 
 void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int action, int mods)
 {
-    ImGui_ImplGlfw_KeyCallback(glfw_window, key, scancode, action, mods);
-
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -148,8 +110,6 @@ void Window::resize_callback(GLFWwindow *glfw_window, int width, int height)
 
 void Window::mouse_button_callback(GLFWwindow *glfw_window, int button, int action, int mods)
 {
-    ImGui_ImplGlfw_MouseButtonCallback(glfw_window, button, action, mods);
-
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
     if (button == GLFW_MOUSE_BUTTON_LEFT)
@@ -167,8 +127,6 @@ void Window::mouse_button_callback(GLFWwindow *glfw_window, int button, int acti
 
 void Window::cursor_pos_callback(GLFWwindow *glfw_window, double x, double y)
 {
-    ImGui_ImplGlfw_CursorPosCallback(glfw_window, x, y);
-
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
     if (window.m_button_down)
@@ -193,17 +151,13 @@ void Window::cursor_pos_callback(GLFWwindow *glfw_window, double x, double y)
 
 void Window::scroll_callback(GLFWwindow *glfw_window, double x_offset, double y_offset)
 {
-    ImGui_ImplGlfw_ScrollCallback(glfw_window, x_offset, y_offset);
-
     if (y_offset == 0.f)
         return;
 
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
-    window.m_scale += y_offset * window.m_scale / 10.f;
+    window.m_scale += y_offset * window.m_scale / 5.f;
     window.m_scale = glm::clamp(window.m_scale, 0.1f, 10.f);
-
-    printf("scale: %f\n", window.m_scale);
 
     window.update_model_matrix();
 }

@@ -6,7 +6,6 @@
 #define INC_3DMODELVIEWER_WINDOW_HPP
 
 #include "window_base.hpp"
-#include "../imgui/im_gui_context.hpp"
 #include "../opengl/includes.hpp"
 #include "../model/model.hpp"
 #include "../camera/camera.hpp"
@@ -22,7 +21,6 @@ private:
     void update(float dt);
     void render();
     void update_model_matrix();
-    void menu_bar();
     void fps_counter(float dt);
 
     static void key_callback(GLFWwindow* glfw_window, int key, int scancode, int action, int mods);

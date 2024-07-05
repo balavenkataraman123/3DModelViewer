@@ -6,20 +6,15 @@ set(CMAKE_CXX_STANDARD 23)
 set(GLAD_DIR ${CMAKE_CURRENT_LIST_DIR}/dependencies/glad)
 set(GLFW_DIR ${CMAKE_CURRENT_LIST_DIR}/dependencies/glfw)
 set(GLM_DIR ${CMAKE_CURRENT_LIST_DIR}/dependencies/glm)
-set(IMGUI_DIR ${CMAKE_CURRENT_LIST_DIR}/dependencies/imgui)
 set(STB_DIR ${CMAKE_CURRENT_LIST_DIR}/dependencies/stb)
 set(ASSIMP_DIR ${CMAKE_CURRENT_LIST_DIR}/dependencies/assimp)
 
 file(GLOB_RECURSE GLAD_SRC ${GLAD_DIR}/*.c)
 file(GLOB_RECURSE GLAD_HEADERS ${GLAD_DIR}/*.h)
-file(GLOB_RECURSE IMGUI_SRC ${IMGUI_DIR}/*.cpp)
-file(GLOB_RECURSE IMGUI_HEADERS ${IMGUI_DIR}/*.h)
 
 add_executable(3DModelViewer
         ${GLAD_SRC}
         ${GLAD_HEADERS}
-        ${IMGUI_SRC}
-        ${IMGUI_HEADERS}
         src/main.cpp
         src/opengl/vertex_buffer.hpp
         src/opengl/vertex_buffer_static.cpp
@@ -44,8 +39,6 @@ add_executable(3DModelViewer
         src/opengl/texture2D.hpp
         src/opengl/framebuffer.cpp
         src/opengl/framebuffer.hpp
-        src/imgui/im_gui_context.cpp
-        src/imgui/im_gui_context.hpp
         src/model/mesh.cpp
         src/model/mesh.hpp
         src/model/model.cpp
@@ -64,7 +57,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
         ${GLAD_DIR}/include
         ${GLFW_DIR}/include
         ${GLM_DIR}/include
-        ${IMGUI_DIR}/include
         ${STB_DIR}/include
         ${ASSIMP_DIR}/include)
 
