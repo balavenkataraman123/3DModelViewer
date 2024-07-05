@@ -48,22 +48,14 @@ void Model::import(const std::string& filename)
     m_directory = filename.substr(0, filename.find_last_of('/') + 1);
     m_model_name = filename.substr(filename.find_last_of('/') + 1);
 
-    system("cls");
-    std::cout << "ModelLoader: Loading model " + m_model_name << '\n';
-
-    Assimp::Importer importer;
-    importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, remove_components);
-    importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, remove_primitives);
-    importer.SetPropertyBool(AI_CONFIG_PP_PTV_NORMALIZE, true);
-
-    const aiScene* scene = importer.ReadFile(filename, import_flags);
-
-    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    try
     {
-        throw std::runtime_error("Model::Model: " + std::string(importer.GetErrorString()));
+        import_impl();
     }
-
-    process_node(scene->mRootNode, scene);
+    catch (const std::exception& e)
+    {
+        std::cout << "\033[31mModelLoader: Failed to load " << m_directory + m_model_name << "\033[0m\n";
+    }
 }
 
 void Model::render(const Shader &shader) const
@@ -72,6 +64,26 @@ void Model::render(const Shader &shader) const
     {
         mesh.render(shader);
     }
+}
+
+void Model::import_impl()
+{
+    system("cls");
+    std::cout << "ModelLoader: Loading model " + m_model_name << '\n';
+
+    Assimp::Importer importer;
+    importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, remove_components);
+    importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, remove_primitives);
+    importer.SetPropertyBool(AI_CONFIG_PP_PTV_NORMALIZE, true);
+
+    const aiScene* scene = importer.ReadFile(m_directory + m_model_name, import_flags);
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        throw std::runtime_error("Model::Model: " + std::string(importer.GetErrorString()));
+    }
+
+    process_node(scene->mRootNode, scene);
 }
 
 void Model::process_node(aiNode *node, const aiScene *scene)

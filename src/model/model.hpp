@@ -24,14 +24,15 @@ public:
     void render(const Shader& shader) const;
 
 private:
+    void import_impl();
+    void clear();
+
     void process_node(aiNode* node, const aiScene* scene);
     void process_mesh(aiMesh* mesh, const aiScene* scene);
 
     std::vector<Vertex> get_vertices(aiMesh* mesh);
     std::vector<uint32_t> get_indices(aiMesh* mesh);
     mesh_textures_t get_textures(aiMesh* mesh, const aiScene* scene);
-
-    void clear();
 
 private:
     std::vector<Mesh> m_meshes;

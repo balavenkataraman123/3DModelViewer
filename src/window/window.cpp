@@ -8,7 +8,6 @@
 Window::Window(uint32_t width, uint32_t height)
     : WindowBase(width, height)
     , m_shader("../shaders/model.vert", "../shaders/model.frag")
-    , m_3d_model("../assets/models/backpack/backpack.obj")
     , m_camera(width, height, glm::radians(45.f))
     , m_model_matrix(1.f)
     , m_button_down()
@@ -26,6 +25,8 @@ Window::Window(uint32_t width, uint32_t height)
     glfwSetCursorPosCallback(m_glfw_window, cursor_pos_callback);
     glfwSetScrollCallback(m_glfw_window, scroll_callback);
     m_camera.set_position(0, 0, 4);
+
+    m_3d_model.import("../assets/models/backpack/backpack.ob");
 }
 
 void Window::run()
