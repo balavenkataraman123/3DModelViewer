@@ -101,7 +101,7 @@ std::vector<Vertex> Model::get_vertices(aiMesh *mesh)
             *reinterpret_cast<glm::vec3*>(&mesh->mVertices[i]),
             *reinterpret_cast<glm::vec3*>(&mesh->mNormals[i]),
             *reinterpret_cast<glm::vec3*>(&mesh->mTangents[i]),
-            *reinterpret_cast<glm::vec3*>(&mesh->mBitangents)
+            *reinterpret_cast<glm::vec3*>(&mesh->mBitangents[i])
         };
 
         if (mesh->HasTextureCoords(0))
