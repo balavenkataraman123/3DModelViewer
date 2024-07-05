@@ -7,10 +7,10 @@
 
 Window::Window(uint32_t width, uint32_t height)
     : WindowBase(width, height)
-    , shader("../shaders/model.vert", "../shaders/model.frag")
-    , backpack("../assets/models/backpack/backpack.obj")
-    , camera(width, height, glm::radians(45.f))
-    , m_model(1.f)
+    , m_shader("../shaders/model.vert", "../shaders/model.frag")
+    , m_3d_model("../assets/models/backpack/backpack.obj")
+    , m_camera(width, height, glm::radians(45.f))
+    , m_model_matrix(1.f)
     , m_button_down()
     , m_cursor_pos_x()
     , m_cursor_pos_y()
@@ -25,7 +25,7 @@ Window::Window(uint32_t width, uint32_t height)
     glfwSetMouseButtonCallback(m_glfw_window, mouse_button_callback);
     glfwSetCursorPosCallback(m_glfw_window, cursor_pos_callback);
     glfwSetScrollCallback(m_glfw_window, scroll_callback);
-    camera.set_position(0, 0, 4);
+    m_camera.set_position(0, 0, 4);
 }
 
 void Window::run()
@@ -54,12 +54,12 @@ void Window::render()
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    shader.bind();
-    shader.set_float3("u_view_pos", camera.position());
-    shader.set_mat4("u_proj_view", camera.proj_view());
-    shader.set_mat4("u_model", m_model);
-    backpack.render(shader);
-    shader.unbind();
+    m_shader.bind();
+    m_shader.set_float3("u_view_pos", m_camera.position());
+    m_shader.set_mat4("u_proj_view", m_camera.proj_view());
+    m_shader.set_mat4("u_model", m_model_matrix);
+    m_3d_model.render(m_shader);
+    m_shader.unbind();
 
     glfwSwapBuffers(m_glfw_window);
 }
@@ -68,9 +68,9 @@ void Window::update_model_matrix()
 {
     static constexpr glm::mat4 identity(1.f);
 
-    m_model = glm::rotate(identity, glm::radians(m_rotation_y), {1.f, 0.f, 0.f});
-    m_model = glm::rotate(m_model, glm::radians(m_rotation_x), {0.f, 1.f, 0.f});
-    m_model = glm::scale(m_model, glm::vec3(m_scale));
+    m_model_matrix = glm::rotate(identity, glm::radians(m_rotation_y), {1.f, 0.f, 0.f});
+    m_model_matrix = glm::rotate(m_model_matrix, glm::radians(m_rotation_x), {0.f, 1.f, 0.f});
+    m_model_matrix = glm::scale(m_model_matrix, glm::vec3(m_scale));
 }
 
 void Window::fps_counter(float dt)
@@ -105,7 +105,7 @@ void Window::resize_callback(GLFWwindow *glfw_window, int width, int height)
 
     glViewport(0, 0, width, height);
 
-    window.camera.resize(width, height);
+    window.m_camera.resize(width, height);
 }
 
 void Window::mouse_button_callback(GLFWwindow *glfw_window, int button, int action, int mods)

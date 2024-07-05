@@ -30,11 +30,11 @@ private:
     static void scroll_callback(GLFWwindow* glfw_window, double x_offset, double y_offset);
 
 private:
-    Shader shader;
-    Model backpack;
-    Camera camera;
+    Shader m_shader;
+    Model m_3d_model;
+    Camera m_camera;
 
-    glm::mat4 m_model;
+    glm::mat4 m_model_matrix;
     bool m_button_down;
     double m_cursor_pos_x;
     double m_cursor_pos_y;
