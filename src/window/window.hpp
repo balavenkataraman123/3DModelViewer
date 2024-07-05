@@ -21,9 +21,9 @@ public:
 private:
     void update(float dt);
     void render();
-    void fps_counter(float dt);
-    void menu_bar();
     void update_model_matrix();
+    void menu_bar();
+    void fps_counter(float dt);
 
     static void key_callback(GLFWwindow* glfw_window, int key, int scancode, int action, int mods);
     static void resize_callback(GLFWwindow* glfw_window, int width, int height);
@@ -43,6 +43,8 @@ private:
     float m_rotation_x;
     float m_rotation_y;
     float m_orbit_nav_sensitivity;
+    float m_scale;
+    float m_scale_sensitivity;
 };
 
 

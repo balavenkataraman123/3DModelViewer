@@ -17,6 +17,8 @@ Window::Window(uint32_t width, uint32_t height)
     , m_rotation_x()
     , m_rotation_y()
     , m_orbit_nav_sensitivity(0.1f)
+    , m_scale(1.f)
+    , m_scale_sensitivity(0.05f)
 {
     glfwSetWindowUserPointer(m_glfw_window, this);
     glfwSetKeyCallback(m_glfw_window, key_callback);
@@ -66,20 +68,13 @@ void Window::render()
     glfwSwapBuffers(m_glfw_window);
 }
 
-void Window::fps_counter(float dt)
+void Window::update_model_matrix()
 {
-    static float fps_update_time = 0;
-    static uint32_t frame_count = 0;
+    static constexpr glm::mat4 identity(1.f);
 
-    fps_update_time += dt;
-    ++frame_count;
-
-    if (fps_update_time > 1)
-    {
-        std::cout << "Fps: " << frame_count << std::endl;
-        frame_count = 0;
-        fps_update_time -= 1;
-    }
+    m_model = glm::rotate(identity, glm::radians(m_rotation_x), {0.f, 1.f, 0.f});
+    m_model = glm::rotate(m_model, glm::radians(m_rotation_y), {1.f, 0.f, 0.f});
+    m_model = glm::scale(m_model, glm::vec3(m_scale));
 }
 
 void Window::menu_bar()
@@ -115,12 +110,20 @@ void Window::menu_bar()
     }
 }
 
-void Window::update_model_matrix()
+void Window::fps_counter(float dt)
 {
-    static constexpr glm::mat4 identity(1.f);
+    static float fps_update_time = 0;
+    static uint32_t frame_count = 0;
 
-    m_model = glm::rotate(identity, glm::radians(m_rotation_x), {0.f, 1.f, 0.f});
-    m_model = glm::rotate(m_model, glm::radians(m_rotation_y), {1.f, 0.f, 0.f});
+    fps_update_time += dt;
+    ++frame_count;
+
+    if (fps_update_time > 1)
+    {
+        std::cout << "Fps: " << frame_count << std::endl;
+        frame_count = 0;
+        fps_update_time -= 1;
+    }
 }
 
 void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int action, int mods)
@@ -193,5 +196,13 @@ void Window::scroll_callback(GLFWwindow *glfw_window, double x_offset, double y_
 {
     ImGui_ImplGlfw_ScrollCallback(glfw_window, x_offset, y_offset);
 
+    if (y_offset == 0.f)
+        return;
+
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
+
+    window.m_scale += y_offset * window.m_scale_sensitivity;
+    window.m_scale = glm::clamp(window.m_scale, 0.1f, 10.f);
+
+    window.update_model_matrix();
 }
