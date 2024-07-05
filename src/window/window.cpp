@@ -18,7 +18,6 @@ Window::Window(uint32_t width, uint32_t height)
     , m_rotation_y()
     , m_orbit_nav_sensitivity(0.1f)
     , m_scale(1.f)
-    , m_scale_sensitivity(0.05f)
 {
     glfwSetWindowUserPointer(m_glfw_window, this);
     glfwSetKeyCallback(m_glfw_window, key_callback);
@@ -120,7 +119,7 @@ void Window::fps_counter(float dt)
 
     if (fps_update_time > 1)
     {
-        std::cout << "Fps: " << frame_count << std::endl;
+       // std::cout << "Fps: " << frame_count << std::endl;
         frame_count = 0;
         fps_update_time -= 1;
     }
@@ -201,8 +200,10 @@ void Window::scroll_callback(GLFWwindow *glfw_window, double x_offset, double y_
 
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
 
-    window.m_scale += y_offset * window.m_scale_sensitivity;
+    window.m_scale += y_offset * window.m_scale / 10.f;
     window.m_scale = glm::clamp(window.m_scale, 0.1f, 10.f);
+
+    printf("scale: %f\n", window.m_scale);
 
     window.update_model_matrix();
 }

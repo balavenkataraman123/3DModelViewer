@@ -44,7 +44,6 @@ private:
     float m_rotation_y;
     float m_orbit_nav_sensitivity;
     float m_scale;
-    float m_scale_sensitivity;
 };
 
 
