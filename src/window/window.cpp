@@ -15,7 +15,7 @@ Window::Window(uint32_t width, uint32_t height)
     , m_cursor_pos_y()
     , m_rotation_x()
     , m_rotation_y()
-    , m_orbit_nav_sensitivity(0.1f)
+    , m_orbit_nav_sensitivity(0.15f)
     , m_scale(1.f)
 {
     glfwSetWindowUserPointer(m_glfw_window, this);
@@ -24,9 +24,9 @@ Window::Window(uint32_t width, uint32_t height)
     glfwSetMouseButtonCallback(m_glfw_window, mouse_button_callback);
     glfwSetCursorPosCallback(m_glfw_window, cursor_pos_callback);
     glfwSetScrollCallback(m_glfw_window, scroll_callback);
-    m_camera.set_position(0, 0, 4);
 
-    m_3d_model.import("../assets/models/low_poly_earth/low_poly_earth.obj");
+    m_camera.set_position(0, 0, 4);
+    m_3d_model.import("../assets/models/floating_island.glb");
 }
 
 void Window::run()
@@ -79,6 +79,7 @@ void Window::import_new(const std::string &filename)
     m_rotation_x = 0;
     m_rotation_y = 0;
     m_scale = 1.f;
+    update_model_matrix();
 
     m_3d_model.import(filename);
 }
