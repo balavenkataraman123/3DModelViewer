@@ -51,7 +51,7 @@ void VertexArray::unbind() const
     glBindVertexArray(0);
 }
 
-void VertexArray::attach_vertex_buffer(const VertexBuffer &vbo, const VertexBufferLayout &layout)
+void VertexArray::attach_vertex_buffer(const VertexBuffer &vbo, const VertexBufferLayout &layout) const
 {
     bind();
     vbo.bind();
@@ -67,7 +67,7 @@ void VertexArray::attach_vertex_buffer(const VertexBuffer &vbo, const VertexBuff
     }
 }
 
-void VertexArray::attach_index_buffer(const IndexBuffer &ibo)
+void VertexArray::attach_index_buffer(const IndexBuffer &ibo) const
 {
     bind();
     ibo.bind();

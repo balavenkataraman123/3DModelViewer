@@ -25,8 +25,8 @@ public:
     void bind() const;
     void unbind() const;
 
-    void attach_vertex_buffer(const VertexBuffer& vbo, const VertexBufferLayout& layout);
-    void attach_index_buffer(const IndexBuffer& ibo);
+    void attach_vertex_buffer(const VertexBuffer& vbo, const VertexBufferLayout& layout) const;
+    void attach_index_buffer(const IndexBuffer& ibo) const;
 
     uint32_t id() const;
 
