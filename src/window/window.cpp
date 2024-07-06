@@ -26,7 +26,7 @@ Window::Window(uint32_t width, uint32_t height)
     glfwSetScrollCallback(m_glfw_window, scroll_callback);
     m_camera.set_position(0, 0, 4);
 
-    m_3d_model.import("../assets/models/backpack/backpack.obj");
+    m_3d_model.import("../assets/models/low_poly_earth/low_poly_earth.obj");
 }
 
 void Window::run()
@@ -97,6 +97,19 @@ void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int ac
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window.m_glfw_window, GLFW_TRUE);
+    }
+
+    if (key == GLFW_KEY_O && action == GLFW_PRESS)
+    {
+        static std::string last_loaded;
+
+        std::string path = utils::file_dialog();
+
+        if (!path.empty() && path != last_loaded)
+        {
+            last_loaded = path;
+            window.m_3d_model.import(path);
+        }
     }
 }
 

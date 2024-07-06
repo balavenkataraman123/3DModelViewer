@@ -9,6 +9,7 @@
 #include "../opengl/includes.hpp"
 #include "../model/model.hpp"
 #include "../camera/camera.hpp"
+#include "../utils/utils.hpp"
 
 
 class Window : public WindowBase

@@ -149,7 +149,7 @@ mesh_textures_t Model::get_textures(aiMesh *mesh, const aiScene *scene)
     mesh_textures_t textures;
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-    static auto get_tex_type = [&, this] (aiTextureType type) -> std::shared_ptr<Texture2D>
+    auto get_tex_type = [&, this] (aiTextureType type) -> std::shared_ptr<Texture2D>
     {
         aiString filename;
 

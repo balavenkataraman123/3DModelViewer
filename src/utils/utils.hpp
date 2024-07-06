@@ -7,12 +7,17 @@
 
 #include <cstdint>
 #include <cassert>
+#include <string>
+#include <filesystem>
+#include <windows.h>
 #include <glad/glad.h>
+#include <glfw/glfw3.h>
 
 
 namespace utils
 {
     uint32_t gl_sizeof(uint32_t type);
+    std::string file_dialog();
 }
 
 
