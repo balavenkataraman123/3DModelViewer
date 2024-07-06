@@ -114,14 +114,17 @@ std::vector<Vertex> Model::get_vertices(aiMesh *mesh)
         {
             *reinterpret_cast<glm::vec3*>(&mesh->mVertices[i]),
             *reinterpret_cast<glm::vec3*>(&mesh->mNormals[i]),
-            *reinterpret_cast<glm::vec3*>(&mesh->mTangents[i]),
-            *reinterpret_cast<glm::vec3*>(&mesh->mBitangents[i])
         };
+
+        if (mesh->HasTangentsAndBitangents())
+        {
+            vertex.tangent = *reinterpret_cast<glm::vec3*>(&mesh->mTangents[i]);
+            vertex.bitangent = *reinterpret_cast<glm::vec3*>(&mesh->mBitangents[i]);
+        }
 
         if (mesh->HasTextureCoords(0))
         {
-            vertex.tex_coords.x = mesh->mTextureCoords[0][i].x;
-            vertex.tex_coords.y = mesh->mTextureCoords[0][i].y;
+            vertex.tex_coords = *reinterpret_cast<glm::vec2*>(&mesh->mTextureCoords[0][i]);
         }
 
         vertices.push_back(std::move(vertex));
