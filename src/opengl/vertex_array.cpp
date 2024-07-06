@@ -8,7 +8,6 @@
 VertexArray::VertexArray()
     : m_renderer_id()
 {
-    glCreateVertexArrays(1, &m_renderer_id);
 }
 
 VertexArray::~VertexArray()
@@ -39,6 +38,16 @@ VertexArray &VertexArray::operator=(VertexArray &&other) noexcept
     }
 
     return *this;
+}
+
+void VertexArray::create()
+{
+    if (m_renderer_id)
+    {
+        glDeleteVertexArrays(1, &m_renderer_id);
+    }
+
+    glCreateVertexArrays(1, &m_renderer_id);
 }
 
 void VertexArray::bind() const

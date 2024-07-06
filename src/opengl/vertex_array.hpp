@@ -22,6 +22,7 @@ public:
     VertexArray(const VertexArray&) = delete;
     VertexArray& operator=(const VertexArray&) = delete;
 
+    void create();
     void bind() const;
     void unbind() const;
 
