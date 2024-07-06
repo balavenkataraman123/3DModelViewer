@@ -26,7 +26,7 @@ Window::Window(uint32_t width, uint32_t height)
     glfwSetScrollCallback(m_glfw_window, scroll_callback);
     m_camera.set_position(0, 0, 4);
 
-    m_3d_model.import("../assets/models/backpack/backpack.ob");
+    m_3d_model.import("../assets/models/backpack/backpack.obj");
 }
 
 void Window::run()
