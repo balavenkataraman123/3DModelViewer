@@ -16,7 +16,8 @@ Mesh::Mesh(const std::vector<Vertex> &vertices,
         {1, 3, GL_FLOAT, GL_FALSE},
         {2, 3, GL_FLOAT, GL_FALSE},
         {3, 3, GL_FLOAT, GL_FALSE},
-        {4, 2, GL_FLOAT, GL_FALSE}
+        {4, 3, GL_FLOAT, GL_FALSE},
+        {5, 2, GL_FLOAT, GL_FALSE}
     };
 
     m_vbo = {vertices.data(), static_cast<uint32_t>(vertices.size() * sizeof(Vertex))};

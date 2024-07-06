@@ -1,5 +1,6 @@
 #version 460 core
 
+flat in vec3 v_color;
 in vec3 v_frag_pos;
 in vec3 v_normal;
 in vec2 v_tex_coords;
@@ -17,27 +18,9 @@ uniform sampler2D u_normal_map;
 
 void main()
 {
-    vec3 diffuse_color;
-    vec3 specular_color;
+    vec3 diffuse_color = u_has_diffuse == 1? texture(u_diffuse_map, v_tex_coords).rgb : v_color;
+    vec3 specular_color = u_has_specular == 1? texture(u_specular_map, v_tex_coords).rgb : v_color;
     vec3 normal;
-
-    if (u_has_diffuse == 1)
-    {
-        diffuse_color = texture(u_diffuse_map, v_tex_coords).rgb;
-    }
-    else
-    {
-        diffuse_color = vec3(0.5f);
-    }
-
-    if (u_has_specular == 1)
-    {
-        specular_color = texture(u_specular_map, v_tex_coords).rgb;
-    }
-    else
-    {
-        specular_color = vec3(0.5f);
-    }
 
     if (u_has_normal == 1)
     {

@@ -74,6 +74,15 @@ void Window::update_model_matrix()
     m_model_matrix = glm::scale(m_model_matrix, glm::vec3(m_scale));
 }
 
+void Window::import_new(const std::string &filename)
+{
+    m_rotation_x = 0;
+    m_rotation_y = 0;
+    m_scale = 1.f;
+
+    m_3d_model.import(filename);
+}
+
 void Window::fps_counter(float dt)
 {
     static float fps_update_time = 0;
@@ -108,7 +117,7 @@ void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int ac
         if (!path.empty() && path != last_loaded)
         {
             last_loaded = path;
-            window.m_3d_model.import(path);
+            window.import_new(path);
         }
     }
 }

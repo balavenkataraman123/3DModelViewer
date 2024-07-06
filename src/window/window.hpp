@@ -22,6 +22,7 @@ private:
     void update(float dt);
     void render();
     void update_model_matrix();
+    void import_new(const std::string& filename);
     void fps_counter(float dt);
 
     static void key_callback(GLFWwindow* glfw_window, int key, int scancode, int action, int mods);

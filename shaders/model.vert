@@ -1,11 +1,13 @@
 #version 460 core
 
 layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 normal;
-layout (location = 2) in vec3 tangent;
-layout (location = 3) in vec3 bitangent;
-layout (location = 4) in vec2 tex_coords;
+layout (location = 1) in vec3 color;
+layout (location = 2) in vec3 normal;
+layout (location = 3) in vec3 tangent;
+layout (location = 4) in vec3 bitangent;
+layout (location = 5) in vec2 tex_coords;
 
+flat out vec3 v_color;
 out vec3 v_frag_pos;
 out vec3 v_normal;
 out vec2 v_tex_coords;
@@ -19,6 +21,7 @@ void main()
 {
     gl_Position = u_proj_view * u_model * vec4(position, 1.f);
 
+    v_color = color;
     v_frag_pos = vec3(u_model * vec4(position, 1.f));
     v_tex_coords = tex_coords;
 

@@ -22,7 +22,6 @@ static constexpr uint32_t import_flags
 
 static constexpr int remove_components
 {
-    aiComponent_COLORS |
     aiComponent_BONEWEIGHTS |
     aiComponent_ANIMATIONS |
     aiComponent_LIGHTS |
@@ -36,8 +35,7 @@ static constexpr int remove_primitives
 };
 
 
-Model::Model(const std::string& filename)
-    : Model()
+Model::Model(const std::string& filename) : Model()
 {
     import(filename);
 }
@@ -61,11 +59,11 @@ void Model::import(const std::string& filename)
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-    std::cout << "\033[31mModelLoader: Failed to load " << m_directory + m_model_name << "\033[0m\n";
+        std::cout << "\033[31mModelLoader: Failed to load " << m_directory + m_model_name << "\033[0m\n";
     }
     else
     {
-    process_node(scene->mRootNode, scene);
+        process_node(scene->mRootNode, scene);
     }
 }
 
@@ -110,11 +108,19 @@ std::vector<Vertex> Model::get_vertices(aiMesh *mesh)
 
     for (size_t i = 0; i < vertex_count; ++i)
     {
-        Vertex vertex
+        Vertex vertex{};
+
+        vertex.position = *reinterpret_cast<glm::vec3*>(&mesh->mVertices[i]);
+        vertex.normal = *reinterpret_cast<glm::vec3*>(&mesh->mNormals[i]);
+
+        if (mesh->HasVertexColors(0))
         {
-            *reinterpret_cast<glm::vec3*>(&mesh->mVertices[i]),
-            *reinterpret_cast<glm::vec3*>(&mesh->mNormals[i]),
-        };
+            vertex.color = *reinterpret_cast<glm::vec3*>(&mesh->mColors[0][i]);
+        }
+        else
+        {
+            vertex.color = glm::vec3(0.5f);
+        }
 
         if (mesh->HasTangentsAndBitangents())
         {
@@ -185,19 +191,19 @@ mesh_textures_t Model::get_textures(aiMesh *mesh, const aiScene *scene)
 
     if (!textures.at(aiTextureType_DIFFUSE))
     {
-        std::cout << "\033[31mModelLoader: Failed to retrieve diffuse map for [model: "
+        std::cout << "\033[31mModelLoader: No diffuse map for [model: "
                   << m_model_name << ", mesh: " << mesh_name << "]\033[0m\n";
     }
 
     if (!textures.at(aiTextureType_SPECULAR))
     {
-        std::cout << "\033[31mModelLoader: Failed to retrieve specular map for [model: "
+        std::cout << "\033[31mModelLoader: No specular map for [model: "
                   << m_model_name << ", mesh: " << mesh_name << "]\033[0m\n";
     }
 
     if (!textures.at(aiTextureType_HEIGHT))
     {
-        std::cout << "\033[31mModelLoader: Failed to retrieve normal map for [model: "
+        std::cout << "\033[31mModelLoader: No normal map for [model: "
                   << m_model_name << ", mesh: " << mesh_name << "]\033[0m\n";
     }
 
