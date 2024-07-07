@@ -51,6 +51,7 @@ struct Texture2DSpec
     int min_filter;
     int mag_filter;
     bool generate_mips;
+    bool flip_uvs;
 
     Texture2DSpec(const char* filename)
         : filename(filename)
@@ -58,6 +59,7 @@ struct Texture2DSpec
         , min_filter(GL_LINEAR_MIPMAP_LINEAR)
         , mag_filter(GL_LINEAR)
         , generate_mips(true)
+        , flip_uvs(false)
     {
     }
 };

@@ -96,7 +96,7 @@ void Texture2D::load(const char *filename, uint32_t *id, int *width, int *height
 
 void Texture2D::load(const Texture2DSpec &spec, uint32_t *id, int *width, int *height)
 {
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(spec.flip_uvs);
 
     int _w, _h;
 

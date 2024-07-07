@@ -33,7 +33,7 @@ namespace utils
         ofn.lStructSize = sizeof(OPENFILENAME);
         ofn.hwndOwner = glfwGetWin32Window(glfwGetCurrentContext());
         ofn.nMaxFile = sizeof(filename);
-        ofn.lpstrFilter = "3D Files\0*.fbx;*.obj;*.dae;*.gltf;*.glb;*.3ds\0";
+        ofn.lpstrFilter = "3D Files\0*.fbx;*.obj;*.dae;*.gltf;*.glb;\0";
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
         if (GetOpenFileName(&ofn) == TRUE)
