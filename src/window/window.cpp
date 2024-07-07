@@ -5,7 +5,7 @@
 #include "window.hpp"
 
 
-static const std::string sample_model {"../assets/models/floating_island.glb"};
+static const std::string sample_model {"../sample_model/fury.fbx"};
 
 Window::Window(uint32_t width, uint32_t height)
     : WindowBase(width, height)
