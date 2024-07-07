@@ -65,7 +65,7 @@ void Model::import(const std::string& filename)
         process_node(scene->mRootNode, scene);
     }
 
-    std::cout << '\n';
+    std::cout << "ModelLoader: Finished loading " << m_model_name << '\n';
 }
 
 void Model::render(const Shader &shader) const
