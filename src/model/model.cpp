@@ -47,8 +47,7 @@ void Model::import(const std::string& filename)
     m_directory = filename.substr(0, filename.find_last_of('/') + 1);
     m_model_name = filename.substr(filename.find_last_of('/') + 1);
 
-    system("cls");
-    std::cout << "ModelLoader: Loading model " + m_model_name << '\n';
+    std::cout << "ModelLoader: Loading model " << m_model_name << '\n';
 
     Assimp::Importer importer;
     importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, remove_components);
@@ -65,6 +64,8 @@ void Model::import(const std::string& filename)
     {
         process_node(scene->mRootNode, scene);
     }
+
+    std::cout << '\n';
 }
 
 void Model::render(const Shader &shader) const
@@ -158,34 +159,9 @@ mesh_textures_t Model::get_textures(aiMesh *mesh, const aiScene *scene)
     mesh_textures_t textures;
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-    auto get_tex_type = [&, this] (aiTextureType type) -> std::shared_ptr<Texture2D>
-    {
-        aiString filename;
-
-        if (material->GetTextureCount(type))
-        {
-            material->GetTexture(type, 0, &filename);
-
-            std::string path = m_directory + std::string(filename.C_Str());
-
-            if (m_loaded_textures.contains(path))
-            {
-               return m_loaded_textures.at(path);
-            }
-            else
-            {
-                auto mesh_texture = std::make_shared<Texture2D>(path.c_str());
-                m_loaded_textures[path] = mesh_texture;
-                return mesh_texture;
-            }
-        }
-
-        return nullptr;
-    };
-
-    textures[aiTextureType_DIFFUSE] = get_tex_type(aiTextureType_DIFFUSE);
-    textures[aiTextureType_SPECULAR] = get_tex_type(aiTextureType_SPECULAR);
-    textures[aiTextureType_HEIGHT] = get_tex_type(aiTextureType_HEIGHT);
+    textures[aiTextureType_DIFFUSE] = get_tex_type(material, aiTextureType_DIFFUSE);
+    textures[aiTextureType_SPECULAR] = get_tex_type(material, aiTextureType_SPECULAR);
+    textures[aiTextureType_HEIGHT] = get_tex_type(material, aiTextureType_HEIGHT);
 
     std::string mesh_name = mesh->mName.C_Str();
 
@@ -208,6 +184,47 @@ mesh_textures_t Model::get_textures(aiMesh *mesh, const aiScene *scene)
     }
 
     return textures;
+}
+
+std::shared_ptr<Texture2D> Model::get_tex_type(aiMaterial *material, aiTextureType type)
+{
+    auto load_texture_safe = [] (const char* filename) -> std::shared_ptr<Texture2D>
+    {
+        std::shared_ptr<Texture2D> texture;
+
+        try
+        {
+            texture = std::make_shared<Texture2D>(filename);
+        }
+        catch (const std::exception&)
+        {
+            std::cout << "\033[31mModelLoader: Failed to load texture " << filename << "\033[0m\n";
+        }
+
+        return texture;
+    };
+
+    aiString filename;
+
+    if (material->GetTextureCount(type))
+    {
+        material->GetTexture(type, 0, &filename);
+
+        std::string path = m_directory + std::string(filename.C_Str());
+
+        if (m_loaded_textures.contains(path))
+        {
+            return m_loaded_textures.at(path);
+        }
+        else
+        {
+            std::shared_ptr<Texture2D> mesh_texture = load_texture_safe(path.c_str());
+            m_loaded_textures[path] = mesh_texture;
+            return mesh_texture;
+        }
+    }
+
+    return nullptr;
 }
 
 void Model::clear()

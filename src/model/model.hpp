@@ -30,6 +30,7 @@ private:
     std::vector<Vertex> get_vertices(aiMesh* mesh);
     std::vector<uint32_t> get_indices(aiMesh* mesh);
     mesh_textures_t get_textures(aiMesh* mesh, const aiScene* scene);
+    std::shared_ptr<Texture2D> get_tex_type(aiMaterial* material, aiTextureType type);
 
     void clear();
 
