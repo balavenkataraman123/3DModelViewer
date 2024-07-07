@@ -5,6 +5,8 @@
 #include "window.hpp"
 
 
+static const std::string sample_model {"../assets/models/floating_island.glb"};
+
 Window::Window(uint32_t width, uint32_t height)
     : WindowBase(width, height)
     , m_shader("../shaders/model.vert", "../shaders/model.frag")
@@ -26,7 +28,7 @@ Window::Window(uint32_t width, uint32_t height)
     glfwSetScrollCallback(m_glfw_window, scroll_callback);
 
     m_camera.set_position(0, 0, 4);
-    m_3d_model.import("../assets/models/floating_island.glb");
+    import_new(sample_model);
 }
 
 void Window::run()
@@ -47,7 +49,6 @@ void Window::run()
 
 void Window::update(float dt)
 {
-    fps_counter(dt);
 }
 
 void Window::render()
@@ -84,22 +85,6 @@ void Window::import_new(const std::string &filename)
     m_3d_model.import(filename);
 }
 
-void Window::fps_counter(float dt)
-{
-    static float fps_update_time = 0;
-    static uint32_t frame_count = 0;
-
-    fps_update_time += dt;
-    ++frame_count;
-
-    if (fps_update_time > 1)
-    {
-        std::cout << "Fps: " << frame_count << std::endl;
-        frame_count = 0;
-        fps_update_time -= 1;
-    }
-}
-
 void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int action, int mods)
 {
     Window& window = *reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfw_window));
@@ -111,13 +96,10 @@ void Window::key_callback(GLFWwindow *glfw_window, int key, int scancode, int ac
 
     if (key == GLFW_KEY_O && action == GLFW_PRESS)
     {
-        static std::string last_loaded;
-
         std::string path = utils::file_dialog();
 
-        if (!path.empty() && path != last_loaded)
+        if (!path.empty())
         {
-            last_loaded = path;
             window.import_new(path);
         }
     }

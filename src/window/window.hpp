@@ -23,7 +23,6 @@ private:
     void render();
     void update_model_matrix();
     void import_new(const std::string& filename);
-    void fps_counter(float dt);
 
     static void key_callback(GLFWwindow* glfw_window, int key, int scancode, int action, int mods);
     static void resize_callback(GLFWwindow* glfw_window, int width, int height);
@@ -35,7 +34,6 @@ private:
     Shader m_shader;
     Model m_3d_model;
     Camera m_camera;
-
     glm::mat4 m_model_matrix;
     bool m_button_down;
     double m_cursor_pos_x;
