@@ -53,7 +53,7 @@ void Window::update(float dt)
 
 void Window::render()
 {
-    glClearColor(0.26f, 0.26f, 0.26f, 1.f);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_shader.bind();
